@@ -1,8 +1,8 @@
 #' @param x If is.null(df), a high cardinality vector. If df is provided, x is
 #' a string giving the name of the high cardinality column. 
 #' @param y If is.null(df), a vector of length = length(x) containing the
-#' target values. If df is provided, y is a character string giving the name of 
-#' the target column.
+#' target values (Either TRUE/FALSE or 0/1). If df is provided, y is a string 
+#' giving the name of the target column.
 #' @param df An optional dataframe containing the high cardinality column and 
 #' the target variable.  
 #' @param mean_name An optional string giving the name to be returned for 
@@ -24,6 +24,7 @@
 # for each group, but pulling groups with low counts toward the 'grand mean'
 # probability 
 
+# TODO: allow regression (continuous y)
 # TODO: add ability to aggregate at levels other than the top-level. 
 #   example: zip codes should be able to aggrate at the zip4 level instead of 
 #   the grand mean level. 
