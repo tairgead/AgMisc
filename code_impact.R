@@ -1,8 +1,13 @@
-#' @param x If is.null(df) a character string giving the name of the high 
-#' cardinality column. If df is provided, x is a high cardinality vector.
-#' @param y If is.null(df), a character string giving the name of the target 
-#' column. If df is provided, y is a vector of length = length(x) containing the
-#' target values.
+#' @param x If is.null(df), a high cardinality vector. If df is provided, x is
+#' a string giving the name of the high cardinality column. 
+#' @param y If is.null(df), a vector of length = length(x) containing the
+#' target values. If df is provided, y is a character string giving the name of 
+#' the target column.
+#' @param df An optional dataframe containing the high cardinality column and 
+#' the target variable.  
+#' @param mean_name An optional string giving the name to be returned for 
+#' the 'grand mean'. This will be a new group added to the retun dataframe
+#' to account for new groups that weren't included while training.
 #' @return A dataframe with the groups from x and the re-coded value.
 #' @examples
 #' code_impact("group", "value", df = my_df)
