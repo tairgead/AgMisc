@@ -1,9 +1,16 @@
-# TODO: add ability to aggregate at levels other than the top-level. 
-# example: zip codes should be able to aggrate at the zip4 level instead of 
-# the grand mean level. 
+#' @param x If is.null(df) a character string giving the name of the high 
+#' cardinality column. If df is provided, x is a high cardinality vector.
+#' @param y If is.null(df), a character string giving the name of the target 
+#' column. If df is provided, y is a vector of length = length(x) containing the
+#' target values.
+#' @return A dataframe with the groups from x and the re-coded value.
+#' @examples
+#' code_impact("group", "value", df = my_df)
+#' code_impact(my_df$group, my_df$value)
 
 # based on 'Preprocessing Scheme for High Cardinality Attributes'
 # by Daniele Micci-Barreca @ ClearCommerce Corporation
+# and some work on the WinVector blog (John Mount & Nina Zumel)
 
 # This function takes high cardinality variables and creates an 'impact score'
 # for each level, allowing us to use the variable in a model
@@ -12,7 +19,19 @@
 # for each group, but pulling groups with low counts toward the 'grand mean'
 # probability 
 
-code_impact <- function(df, x, y, mean_name = "grand_mean") {
+# TODO: add ability to aggregate at levels other than the top-level. 
+#   example: zip codes should be able to aggrate at the zip4 level instead of 
+#   the grand mean level. 
+# TODO: add parallel option
+
+code_impact <- function(x, y, df = NULL, mean_name = "grand_mean") {
+  if (is.null(df)) {
+    df <- data.frame(x, y)
+    names(df) <- c("group", "value")
+    x <- names(df)[[1]]
+    y <- names(df)[[2]]
+  }
+  
   group <- unique(df[[x]])
 
   assertthat::assert_that(sum(group == "grand_mean" & mean_name == "grand_mean") == 0,
@@ -43,13 +62,13 @@ code_impact <- function(df, x, y, mean_name = "grand_mean") {
   
   for (grp in 1:length(group)) {
     # count of rows with x = group
-    n_i <- nrow(df[which(df[x] == group[[grp]]), ]) 
+    n_i <- sum(df[x] == group[[grp]]) 
     
     # count of rows with x = group and y in target class
-    n_iy <- nrow(df[which(df[x] == group[[grp]] & df[y] == 1), ]) 
+    n_iy <- sum(df[x] == group[[grp]] & df[y] == 1) 
     
     # total count of rows with y in target class
-    n_y <- nrow(df[which(df[x] != grand_mean & df[y] == 1), ]) 
+    n_y <- sum(df[x] != grand_mean & df[y] == 1)
     
     # total length of x
     n_t <- nrow(df) / 2
